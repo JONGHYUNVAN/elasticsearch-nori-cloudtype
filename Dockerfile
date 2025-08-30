@@ -10,7 +10,7 @@ RUN elasticsearch-plugin install analysis-nori
 
 # 환경 변수 설정
 ENV discovery.type=single-node
-ENV xpack.security.enabled=false
+ENV xpack.security.enabled=true
 ENV ES_JAVA_OPTS="-Xms512m -Xmx768m"
 ENV cluster.name="elasticsearch-nori-cluster"
 ENV node.name="elasticsearch-nori-node"
