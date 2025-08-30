@@ -1,0 +1,42 @@
+# Elasticsearch 데이터
+data/
+logs/
+
+# Docker
+.dockerignore
+
+# OS 생성 파일
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 임시 파일
+*.tmp
+*.log
+
+# 백업 파일
+*.bak
+*.backup
+
+# 환경 변수 파일
+.env
+.env.local
+.env.production
+
+# Node modules (Kibana 관련)
+node_modules/
+
+# Python (Django 연동 테스트 시)
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+venv/
+.venv/
+

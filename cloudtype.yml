@@ -1,0 +1,109 @@
+# =============================================================================
+# CloudType.io Elasticsearch with Nori Plugin Deployment Configuration
+# 한국어 검색을 위한 Elasticsearch + Nori 플러그인 배포 설정
+# =============================================================================
+
+name: elasticsearch-nori
+version: "1.0"
+
+# 런타임 설정 (Docker 이미지 사용)
+runtime:
+  type: container
+  image: custom  # 커스텀 Dockerfile 사용
+
+# 빌드 설정
+build:
+  # Dockerfile 사용하여 빌드
+  dockerfile: Dockerfile
+  context: .
+  
+  # 빌드 환경 변수
+  environment:
+    - ELASTICSEARCH_VERSION=8.15.0
+    - ES_JAVA_OPTS=-Xms512m -Xmx512m
+
+# 배포 설정
+deploy:
+  # 컨테이너 시작 명령어 (기본 Elasticsearch 시작)
+  start:
+    command: /usr/local/bin/docker-entrypoint.sh elasticsearch
+
+  # 헬스체크 설정
+  health_check:
+    path: /_cluster/health
+    port: 9200
+    interval: 30
+    timeout: 10
+    retries: 5
+
+# 리소스 설정
+resources:
+  # 메모리 및 CPU 설정 (Elasticsearch 최소 요구사항)
+  memory: 1Gi  # 최소 1GB 권장
+  cpu: 0.5
+  
+  # 디스크 설정 (Elasticsearch 데이터 저장용)
+  disk: 5Gi    # 최소 5GB 권장
+
+# 환경 변수 설정
+environment:
+  # Elasticsearch 기본 설정
+  - name: discovery.type
+    value: "single-node"
+    
+  - name: xpack.security.enabled
+    value: "false"
+    
+  - name: ES_JAVA_OPTS
+    value: "-Xms512m -Xmx512m"
+    
+  - name: cluster.name
+    value: "elasticsearch-nori-cluster"
+    
+  - name: node.name
+    value: "elasticsearch-nori-node"
+    
+  # 한국어 분석 최적화
+  - name: indices.query.bool.max_clause_count
+    value: "8192"
+
+# 네트워크 설정
+network:
+  ports:
+    - name: elasticsearch
+      port: 9200
+      target_port: 9200
+      protocol: TCP
+    - name: elasticsearch-transport
+      port: 9300
+      target_port: 9300
+      protocol: TCP
+
+# 스케일링 설정
+scaling:
+  min_instances: 1
+  max_instances: 1  # Elasticsearch는 단일 노드로 운영
+  target_cpu_utilization: 70
+
+# 볼륨 설정 (데이터 영속성)
+volumes:
+  - name: elasticsearch-data
+    mount_path: /usr/share/elasticsearch/data
+    size: 5Gi
+
+# 로그 설정
+logging:
+  level: INFO
+  retention: 7d
+
+# 모니터링 설정
+monitoring:
+  enabled: true
+  metrics:
+    - cpu
+    - memory
+    - disk
+    - network
+    - elasticsearch_cluster_health
+    - elasticsearch_node_stats
+

@@ -1,0 +1,75 @@
+# =============================================================================
+# Elasticsearch with Nori Plugin - Docker Compose Configuration
+# 로컬 개발 및 테스트용 Elasticsearch + Nori 플러그인 설정
+# =============================================================================
+
+version: '3.8'
+
+services:
+  # Elasticsearch with Nori Plugin
+  elasticsearch:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: elasticsearch-nori
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+      - cluster.name=elasticsearch-nori-cluster
+      - node.name=elasticsearch-nori-node
+      # 한국어 분석 설정
+      - indices.query.bool.max_clause_count=8192
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+      - ./config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+    networks:
+      - elasticsearch_network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    restart: unless-stopped
+
+  # Kibana for Elasticsearch Management (Optional)
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.15.0
+    container_name: kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+      - SERVER_NAME=kibana
+      - SERVER_HOST=0.0.0.0
+    ports:
+      - "5601:5601"
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    networks:
+      - elasticsearch_network
+    restart: unless-stopped
+
+  # Elasticsearch Head Plugin (Alternative GUI)
+  elasticsearch-head:
+    image: mobz/elasticsearch-head:5
+    container_name: elasticsearch-head
+    ports:
+      - "9100:9100"
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    networks:
+      - elasticsearch_network
+    restart: unless-stopped
+
+volumes:
+  es_data:
+    driver: local
+
+networks:
+  elasticsearch_network:
+    driver: bridge
+
