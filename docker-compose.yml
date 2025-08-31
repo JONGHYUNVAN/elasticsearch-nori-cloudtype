@@ -14,8 +14,8 @@ services:
     container_name: elasticsearch-nori
     environment:
       - discovery.type=single-node
-      - xpack.security.enabled=false
-      - ES_JAVA_OPTS=-Xms1g -Xmx1g
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+      - ES_JAVA_OPTS=-Xms512m -Xmx768m
       - cluster.name=elasticsearch-nori-cluster
       - node.name=elasticsearch-nori-node
       # 한국어 분석 설정

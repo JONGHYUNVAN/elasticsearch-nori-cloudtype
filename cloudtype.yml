@@ -20,7 +20,6 @@ build:
   # 빌드 환경 변수
   environment:
     - ELASTICSEARCH_VERSION=8.15.0
-    - ES_JAVA_OPTS=-Xms512m -Xmx512m
 
 # 배포 설정
 deploy:
@@ -51,17 +50,16 @@ environment:
   - name: discovery.type
     value: "single-node"
     
-  - name: xpack.security.enabled
+  - name: ELASTIC_PASSWORD
+    value: ""
+  - name: ES_JAVA_OPTS
+    value: "-Xms512m -Xmx768m"
+  - name: xpack.ml.enabled
     value: "false"
-    
-        - name: ES_JAVA_OPTS
-        value: -Xms1g -Xmx1g
-      - name: xpack.ml.enabled
-        value: "false"
-      - name: xpack.graph.enabled
-        value: "false"
-      - name: xpack.watcher.enabled
-        value: "false"
+  - name: xpack.graph.enabled
+    value: "false"
+  - name: xpack.watcher.enabled
+    value: "false"
     
   - name: cluster.name
     value: "elasticsearch-nori-cluster"
