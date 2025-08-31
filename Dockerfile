@@ -23,4 +23,4 @@ VOLUME ["/usr/share/elasticsearch/data"]
 
 # 헬스체크 
 HEALTHCHECK --interval=60s --timeout=30s --start-period=120s --retries=10 \
-  CMD curl -f -u elastic:VANSDEVBLOG http://localhost:9200/_cluster/health || exit 1
+  CMD curl -f -u VANSDEVBLOG_ELASTICSEARCH:VANSDEVBLOG http://localhost:9200/_cluster/health || exit 1

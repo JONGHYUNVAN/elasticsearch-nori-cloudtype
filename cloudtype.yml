@@ -54,8 +54,14 @@ environment:
   - name: xpack.security.enabled
     value: "false"
     
-  - name: ES_JAVA_OPTS
-    value: "-Xms512m -Xmx512m"
+        - name: ES_JAVA_OPTS
+        value: -Xms1g -Xmx1g
+      - name: xpack.ml.enabled
+        value: "false"
+      - name: xpack.graph.enabled
+        value: "false"
+      - name: xpack.watcher.enabled
+        value: "false"
     
   - name: cluster.name
     value: "elasticsearch-nori-cluster"
