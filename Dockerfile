@@ -10,7 +10,7 @@ RUN elasticsearch-plugin install analysis-nori
 
 # 환경 변수 설정
 ENV discovery.type=single-node
-ENV xpack.security.enabled=true
+ENV xpack.security.enabled=false
 ENV ES_JAVA_OPTS="-Xms512m -Xmx768m"
 ENV cluster.name="elasticsearch-nori-cluster"
 ENV node.name="elasticsearch-nori-node"
@@ -21,6 +21,6 @@ EXPOSE 9200 9300
 # 데이터 볼륨
 VOLUME ["/usr/share/elasticsearch/data"]
 
-# 헬스체크 
-HEALTHCHECK --interval=60s --timeout=30s --start-period=120s --retries=10 \
-  CMD curl -f -u VANSDEVBLOG_ELASTICSEARCH:VANSDEVBLOG http://localhost:9200/_cluster/health || exit 1
+# 헬스체크
+HEALTHCHECK --interval=30s --timeout=10s --retries=5 \
+  CMD curl -f http://localhost:9200/_cluster/health || exit 1
